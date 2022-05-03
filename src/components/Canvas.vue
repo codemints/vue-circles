@@ -82,9 +82,9 @@
       clickColors: ['#ff5850', '#00a7af'],
       maxSize: 150,
       minSize: 10,
-      maxPop: 12,
-      minPop: 8,
-      velocity: 1.5,
+      maxPop: 15,
+      minPop: 10,
+      velocity: 0.125,
     })
     drawToCanvas()
   })

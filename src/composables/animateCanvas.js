@@ -38,8 +38,8 @@ const animateCanvas = () => {
       $_.ctx.fill()
       $_.ctx.shadowOffsetX = 3
       $_.ctx.shadowOffsetY = 3
-      $_.ctx.shadowColor = 'rgba(0, 0, 0, 0.125)'
-      $_.ctx.shadowBlur = 10
+      $_.ctx.shadowColor = 'rgba(0, 0, 0, 0.075)'
+      $_.ctx.shadowBlur = 15
     }
     
     animateCircle() {
