@@ -17,20 +17,7 @@ const animateCanvas = () => {
     const select = getRandomNumber(1, 2)
     return select === 1 ? args[0] : args[1]
   }
-
-  const changeVelocity = (method) => {
-    method === 'increase' ? $_.velocity *= 1.125 : $_.velocity *= 0.875
-    $_.circles.forEach(circle => {
-      if ( method === 'increase' ) {
-        circle.dx *= 1.125
-        circle.dy *= 1.125
-      } else {
-        circle.dx *= 0.875
-        circle.dy *= 0.875
-      }
-    })
-  }
-
+  
   //CIRCLE FACTORY
   class Circle {
     constructor(x, y, rad, color) {
@@ -49,6 +36,10 @@ const animateCanvas = () => {
       $_.ctx.fillStyle = this.color
       $_.ctx.arc(this.x, this.y, this.rad, 0, Math.PI * 2)
       $_.ctx.fill()
+      $_.ctx.shadowOffsetX = 3
+      $_.ctx.shadowOffsetY = 3
+      $_.ctx.shadowColor = 'rgba(0, 0, 0, 0.125)'
+      $_.ctx.shadowBlur = 10
     }
     
     animateCircle() {
@@ -70,7 +61,11 @@ const animateCanvas = () => {
     $_.clickColors = obj.clickColors
     $_.maxSize = obj.maxSize
     $_.minSize = obj.minSize
+    $_.maxPop = obj.maxPop
+    $_.minPop = obj.minPop
     $_.velocity = obj.velocity
+    $_.initVelocity = obj.velocity
+    $_.frame = -1
     $_.circles = populateCircles(obj.minPop, obj.maxPop, obj.minSize, obj.maxSize)
   }
 
@@ -97,7 +92,7 @@ const animateCanvas = () => {
     
     $_.circles.forEach((item, index, array) => array[index].animateCircle())
     
-    requestAnimationFrame(drawToCanvas)
+    $_.frame = requestAnimationFrame(drawToCanvas)
   }
 
   const spawnNewCircle = (e) => {
@@ -107,16 +102,62 @@ const animateCanvas = () => {
 
   //INITIALIZE FUNCTION  
   const initCircleAnimation = () => {
-    drawToCanvas(populateCircles())
+    drawToCanvas()
   }
 
+  const changeVelocity = (e) => {
+    const method = e.target.dataset.function
+    method === 'increase' ? $_.velocity += 0.25 : $_.velocity -= 0.25
+    $_.circles.forEach(circle => {
+      if ( method === 'increase' ) {
+        circle.dx *= 1.125
+        circle.dy *= 1.125
+      } else {
+        circle.dx *= 0.875
+        circle.dy *= 0.875
+      }
+    })
+  }
+  
+  const clearCanvas = () => {
+    cancelAnimationFrame($_.frame)
+    $_.ctx.clearRect(0, 0, $_.canvas.width, $_.canvas.height)
+    $_.velocity = $_.initVelocity
+    $_.circles = populateCircles($_.minPop, $_.maxPop, $_.minSize, $_.maxSize)
+
+    $_.redrawn = false
+    $_.cleared = true
+  }
+  
+  const toggleAnimation = () => {
+    if ( $_.cleared === true ) return false
+    if ( $_.stopped ) {
+      $_.frame = requestAnimationFrame(drawToCanvas)
+      return $_.stopped = false
+    }
+    cancelAnimationFrame($_.frame)
+    $_.stopped = true
+
+    return true
+  }
+  
+  const redrawCanvas = () => {
+    if ( $_.redrawn === true || $_.redrawn === undefined ) return
+    $_.frame = requestAnimationFrame(drawToCanvas)
+    $_.redrawn = true
+    $_.cleared = false
+  }
+  
   //RETURNED DATA
   return {
     circleData,
     setCircleData,
-    initCircleAnimation,
+    drawToCanvas,
     spawnNewCircle,
-    changeVelocity
+    changeVelocity,
+    clearCanvas,
+    toggleAnimation,
+    redrawCanvas,
   }
 }
 

@@ -24,12 +24,16 @@ h1 {
   font-size: 4.8rem;
   font-weight: 700;
   text-transform: uppercase;
+  line-height: 1;
   white-space: nowrap;
 }
 
 h4 {
   color: $theme-blue;
   font-size: 1.8rem;
+  line-height: 1;
+  margin-top: 1rem;
+  text-transform: lowercase;
 }
 
 .header {
@@ -49,6 +53,13 @@ h4 {
   transform: translateX(-50%);
 }
 
+.controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
 button {
   font-size: 1.4rem;
   color: white;
@@ -58,7 +69,7 @@ button {
   padding-inline: 1.6rem;
   padding-block: 0.8rem;
   
-  &.focus {
+  &.isClicked {
     background-color: darken($theme-orange, 10%)
   }
 }
@@ -66,7 +77,18 @@ button {
 button[data-type="secondary"] {
   background-color: $theme-blue;
   
-  &.focus {
+  &.isClicked {
     background-color: darken($theme-blue, 10%)
+  }
+}
+
+button[data-type="control"] {
+  width: 100%;
+  padding-inline: 1rem;
+  padding-block: 0.5rem;
+  background-color: $theme-600;
+
+  &.isClicked {
+    background-color: darken($theme-600, 10%)
   }
 }

@@ -1,11 +1,45 @@
 <template>
   <div class="header">
-    <button @click="changeVelocity('increase')">changeVelocity(increase)</button>
+    <Button
+      :click="changeVelocity"
+      data-function="increase"
+    >
+      velocity(increase)
+    </Button>
     <div class="title">
-      <h1>Floating Circles</h1>
-      <h4>Click anywhere to spawn more</h4>
+      <div>
+        <h1>Floating Circles</h1>
+        <h4>Click anywhere to spawn more</h4>
+      </div>
+      <div class="controls">
+        <Button
+          :click="clearCanvas"
+          data-type="control"
+        >
+          canvas.clear()
+        </Button>
+
+        <Button
+          :click="handleToggle"
+          data-type="control"
+        >
+          {{ stopped ? 'canvas.start()' : 'canvas.stop()' }}
+        </Button>
+
+        <Button
+          :click="redrawCanvas"
+          data-type="control"
+        >
+          canvas.redraw()
+        </Button>
+      </div>
     </div>
-    <button @click="changeVelocity('decrease')" data-type="secondary">changeVelocity(decrease)</button>
+    <Button
+      :click="changeVelocity"
+      data-function="decrease"
+    >
+      velocity(decrease)
+    </Button>
   </div>
   <canvas
     @click="spawnNewCircle"
@@ -17,10 +51,27 @@
 
 <script setup>
   import { ref, onMounted } from 'vue'
+  import Button from '@comps/Button.vue'
   import animateCanvas from '@scripts/animateCanvas'
 
   const canvas = ref(null)
-  const { setCircleData, initCircleAnimation, spawnNewCircle, changeVelocity } = animateCanvas()
+  const stopped = ref(false)
+  const clicked = ref(null)
+
+  const {
+    setCircleData,
+    drawToCanvas,
+    spawnNewCircle,
+    changeVelocity,
+    clearCanvas,
+    toggleAnimation,
+    redrawCanvas,
+  } = animateCanvas()
+
+  const handleToggle = (e) => {
+    const toggled = toggleAnimation(e)
+    toggled === true ? stopped.value = true : stopped.value = false
+  }
 
   onMounted(() => {
     canvas.value.width = window.innerWidth
@@ -35,7 +86,7 @@
       minPop: 8,
       velocity: 1.5,
     })
-    initCircleAnimation()
+    drawToCanvas()
   })
 
 
